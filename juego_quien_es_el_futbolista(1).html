@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071426">
+<title>¿Quién es el futbolista?</title>
+<style>
+:root{color-scheme:dark;--bg:#071426;--panel:#10233d;--panel2:#162d4b;--green:#23d18b;--muted:#a9bad0;--white:#f5f8ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0%,#17416b 0,transparent 36%),linear-gradient(160deg,#06101e,#0b1c31 65%,#071426);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--white);min-height:100vh}
+main{width:min(720px,100%);margin:auto;padding:22px 16px 36px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px}.logo{font-size:13px;letter-spacing:2px;color:var(--green);font-weight:900}.pill{border:1px solid #35516f;border-radius:99px;padding:7px 11px;color:var(--muted);font-size:12px}
+h1{font-size:clamp(29px,8vw,44px);line-height:1.03;margin:22px 0 8px;font-weight:950;letter-spacing:-1.5px}h1 span{color:var(--green)}.sub{color:var(--muted);margin:0 0 20px}
+.panel{background:linear-gradient(145deg,rgba(22,45,75,.96),rgba(12,29,50,.96));border:1px solid #294766;border-radius:22px;padding:18px;box-shadow:0 18px 45px #0005}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.label{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:800}
+select,button{font:inherit}select{background:#091a2d;color:white;border:1px solid #3a5877;border-radius:12px;padding:10px 12px}
+.statgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:17px 0}.stat{background:#091a2d;border:1px solid #24415f;border-radius:15px;padding:13px}.stat b{display:block;color:var(--green);font-size:20px;margin-top:3px}.stat small{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.7px}
+.info{background:#0a1b2f;border-radius:14px;padding:14px;margin-top:10px;color:#e7effa;line-height:1.45}.info strong{color:var(--green)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}button{border:0;border-radius:14px;padding:14px 12px;font-weight:850;cursor:pointer}.primary{background:var(--green);color:#062117}.secondary{background:#203b5b;color:white;border:1px solid #3b5d80}.reveal{display:none;margin-top:14px;border:1px solid #2b6d59;background:#0b2c2b;border-radius:16px;padding:15px}.reveal h2{margin:4px 0 5px;color:var(--green);font-size:27px}.hint{color:var(--muted);font-size:13px;margin-top:14px;text-align:center}.footer{text-align:center;color:#70869f;font-size:11px;margin-top:20px}
+@media(max-width:380px){.actions{grid-template-columns:1fr}.statgrid{gap:8px}.stat{padding:11px}}
+</style>
+</head>
+<body>
+<main>
+ <div class="top"><div class="logo">⚽ FUTBOL QUIZ</div><div class="pill">MODO ADIVINANZA</div></div>
+ <h1>¿QUIÉN ES <span>EL FUTBOLISTA?</span></h1>
+ <p class="sub">Lee las pistas, piensa tu respuesta y descubre si acertaste.</p>
+ <section class="panel">
+  <div class="row"><span class="label">Dificultad</span><select id="level"><option value="1">⭐ Fácil</option><option value="2" selected>⭐⭐ Medio</option><option value="3">⭐⭐⭐ Difícil</option><option value="4">🔥 Experto</option></select></div>
+  <div class="row" style="margin-top:18px"><span class="label">Pistas del jugador</span><span class="pill" id="count">Jugador 1</span></div>
+  <div class="statgrid">
+   <div class="stat"><small>Nacionalidad</small><b id="nationality">—</b></div>
+   <div class="stat"><small>Posición</small><b id="position">—</b></div>
+   <div class="stat"><small>Clubes destacados</small><b id="clubs" style="font-size:15px;line-height:1.3">—</b></div>
+   <div class="stat"><small>Goles / dato</small><b id="fact" style="font-size:15px;line-height:1.3">—</b></div>
+  </div>
+  <div class="info" id="bio">Pulsa «Nueva ronda» para comenzar el desafío.</div>
+  <div class="reveal" id="answer"><div class="label">La respuesta era</div><h2 id="name"></h2><div id="extra"></div></div>
+  <div class="actions"><button class="primary" id="show">👀 Revelar jugador</button><button class="secondary" id="next">🔄 Nueva ronda</button></div>
+  <p class="hint">Consejo: intenta adivinar antes de revelar. ¡Cada ronda elige otro jugador!</p>
+ </section>
+ <div class="footer">Juego de preguntas · Funciona sin conexión después de descargarlo</div>
+</main>
+<script>
+const players=[
+{name:"Lionel Messi",nat:"Argentina 🇦🇷",pos:"Delantero",clubs:"Barcelona · PSG · Inter Miami",fact:"Más de 800 goles oficiales",bio:"Ganó el Mundial de 2022 y ocho Balones de Oro.",easy:"Es zurdo y famoso por su regate.",hard:"Debutó profesionalmente con el Barcelona en 2004.",level:1},
+{name:"Cristiano Ronaldo",nat:"Portugal 🇵🇹",pos:"Delantero",clubs:"Sporting · Man United · Real Madrid · Juventus",fact:"Más de 900 goles oficiales",bio:"Ganó cinco Balones de Oro y la Eurocopa 2016.",easy:"Es conocido por su salto y potencia física.",hard:"Su primer club profesional fue el Sporting de Lisboa.",level:1},
+{name:"Kylian Mbappé",nat:"Francia 🇫🇷",pos:"Delantero",clubs:"Mónaco · PSG · Real Madrid",fact:"Campeón del mundo en 2018",bio:"Fue una de las grandes figuras de Francia en Rusia 2018.",easy:"Destaca por su velocidad explosiva.",hard:"Nació en Bondy, cerca de París.",level:2},
+{name:"Luka Modrić",nat:"Croacia 🇭🇷",pos:"Centrocampista",clubs:"Tottenham · Real Madrid",fact:"Balón de Oro 2018",bio:"Lideró a Croacia hasta la final del Mundial 2018.",easy:"Es un mediocampista de gran visión.",hard:"Creció jugando al fútbol durante la guerra de Croacia.",level:2},
+{name:"Sadio Mané",nat:"Senegal 🇸🇳",pos:"Extremo",clubs:"Liverpool · Bayern · Al-Nassr",fact:"Campeón de África 2021",bio:"Fue figura del Liverpool y referente de Senegal.",easy:"Es conocido por su velocidad y solidaridad.",hard:"Antes de llegar a la élite europea jugó en Metz y Salzburgo.",level:2},
+{name:"Andrés Iniesta",nat:"España 🇪🇸",pos:"Centrocampista",clubs:"Barcelona · Vissel Kobe",fact:"Gol de la final del Mundial 2010",bio:"Marcó el gol que le dio a España su primer Mundial.",easy:"Fue compañero de Xavi en el Barcelona.",hard:"Su gol decisivo llegó en la prórroga ante Países Bajos.",level:3},
+{name:"Wesley Sneijder",nat:"Países Bajos 🇳🇱",pos:"Mediapunta",clubs:"Ajax · Real Madrid · Inter",fact:"Finalista del Mundial 2010",bio:"Ganó el triplete con el Inter de Milán en 2010.",easy:"Fue una figura de Países Bajos en Sudáfrica 2010.",hard:"Ganó la Champions League con José Mourinho en el Inter.",level:3},
+{name:"Zlatan Ibrahimović",nat:"Suecia 🇸🇪",pos:"Delantero",clubs:"Ajax · Inter · Barcelona · Milan · PSG",fact:"Más de 500 goles oficiales",bio:"Fue famoso por sus goles acrobáticos y su personalidad.",easy:"Es uno de los delanteros más carismáticos de Suecia.",hard:"Nació en Malmö y se retiró en 2023.",level:3},
+{name:"Rivaldo",nat:"Brasil 🇧🇷",pos:"Mediapunta",clubs:"Deportivo · Barcelona · Milan",fact:"Balón de Oro 1999",bio:"Fue campeón del mundo con Brasil en 2002.",easy:"Brilló en el Barcelona a finales de los 90.",hard:"Su nombre completo es Rivaldo Vítor Borba Ferreira.",level:4},
+{name:"Dennis Bergkamp",nat:"Países Bajos 🇳🇱",pos:"Segundo delantero",clubs:"Ajax · Inter · Arsenal",fact:"Leyenda del Arsenal",bio:"Es recordado por su técnica y controles extraordinarios.",easy:"Fue una estrella neerlandesa de los años 90.",hard:"Su gol ante Newcastle en 2002 es considerado una obra maestra.",level:4},
+{name:"Clarence Seedorf",nat:"Países Bajos 🇳🇱",pos:"Centrocampista",clubs:"Ajax · Real Madrid · Milan",fact:"Ganó 4 Champions League",bio:"Es el único futbolista que ganó la Champions con tres clubes distintos.",easy:"Jugó en el Real Madrid y el AC Milan.",hard:"Ganó la Champions con Ajax, Real Madrid y Milan.",level:4}
+];
+let current=null,round=0,used=[];
+const $=id=>document.getElementById(id);
+function choose(){let level=+$("level").value;let pool=players.filter(p=>p.level<=level);let fresh=pool.filter(p=>!used.includes(p.name));if(!fresh.length){used=[];fresh=pool}current=fresh[Math.floor(Math.random()*fresh.length)];used.push(current.name);round++;$("count").textContent="Ronda "+round;$("nationality").textContent=current.nat;$("position").textContent=current.pos;$("clubs").textContent=current.clubs;$("fact").textContent=current.fact;$("bio").innerHTML="<strong>Pista:</strong> "+(level===1?current.easy:level===2?current.bio:level===3?current.hard:current.hard);$("answer").style.display="none";$("show").disabled=false}
+$("next").addEventListener("click",choose);
+$("show").addEventListener("click",()=>{if(!current)choose();$("name").textContent=current.name;$("extra").textContent=current.bio;$("answer").style.display="block";$("show").disabled=true});
+$("level").addEventListener("change",()=>{used=[];choose()});
+choose();
+</script>
+</body></html>
